@@ -1,0 +1,73 @@
+public void guardaFotopath(int num,System.Windows.Controls.Image img) {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            dlg.Filter = "*.*|*.*|bmp|*.bmp|jpg|*.jpg|jpeg|*.jpeg|png|*.png";
+
+
+            if (dlg.ShowDialog() == true)
+            {
+                String caminho = Environment.CurrentDirectory;
+                caminho = caminho.Substring(0, caminho.IndexOf("bin")) + "imagens";
+                String[] fichs = Directory.GetFiles(caminho);
+                if (AlunoCorrente.fotopath.Contains("B."))  caminho += "\\" + 
+                              num.ToString()  + Path.GetExtension(dlg.FileName);
+                else caminho += "\\" + num.ToString() + "B" + 
+                                               Path.GetExtension(dlg.FileName);
+                
+               foreach (string fich in fichs)
+                {
+                    Regex r = new Regex(AlunoCorrente.num.ToString() + @"\w?\.");
+                    Match m = r.Match(fich);
+                    if (m.Success) File.Delete(fich);
+                }
+
+                AlunoCorrente.fotopath = caminho;
+                File.Copy(dlg.FileName, caminho, true);
+                OnPropertyChanged("AlunoCorrente");
+            }
+
+        }
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+   public class convertepathtoimage : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, 
+                                                    CultureInfo culture)
+        {
+            string path;
+            try
+            {
+                if (value == null || String.IsNullOrEmpty(value.ToString()))
+                {
+                    path = Environment.CurrentDirectory;
+                    path = path.Substring(0, path.IndexOf("bin")) + 
+                                                    "imagens\\nofoto.png";
+
+                }
+                else {
+
+                    path = value.ToString();
+
+                }
+                
+               
+                BitmapImage bi = new BitmapImage();
+                bi.BeginInit();
+                bi.DecodePixelWidth = 600;
+                bi.CacheOption = BitmapCacheOption.OnLoad;
+                bi.CreateOptions = BitmapCreateOptions.DelayCreation;
+                bi.UriSource = new Uri(path, UriKind.Absolute);
+                bi.EndInit();
+                return bi;
+            }
+            catch (Exception erro)
+            {
+
+                MessageBox.Show(erro.Message);
+                return null;
+            }
+
+            
+
+        }
+

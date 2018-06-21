@@ -13,29 +13,42 @@ namespace istecnotas
     {
         public MainWindow mainwindowproperty { get; set; }
 
-        public ViewModel()
+        public void reset()
         {
-            using (progIInoitesegEntities bd = new  progIInoitesegEntities())
+            using (progIInoitesegEntities bd = new progIInoitesegEntities())
             {
                 ListaAlunos = new ObservableCollection<aluno>(bd.alunos.Include("notas"));
                 AlunosView = CollectionViewSource.GetDefaultView(ListaAlunos);
                 AlunoCorrente = (aluno)AlunosView.CurrentItem;
                 AlunosView.CurrentChanged += AlunosView_CurrentChanged;
             }
+
+
+
+        }
+
+
+        public ViewModel()
+        {
+            reset();
             
         }
 
         private void AlunosView_CurrentChanged(object sender, EventArgs e)
         {
             AlunoCorrente = (aluno)AlunosView.CurrentItem;
+            
         }
 
+        #region PropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(string nome)
         {
             if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(nome));
 
         }
+
+        #endregion
 
         #region dados
 
@@ -94,8 +107,84 @@ namespace istecnotas
         #endregion
 
 
+        #region navregistos
+
+        public bool cangoFirst()
+        {
+            return AlunosView.CurrentPosition > 0;
+        }
+
+        public bool cangoLast()
+        {
+            return AlunosView.CurrentPosition < AlunosView.Cast<aluno>().Count() - 1;
+        }
 
 
+
+        public void goFirst()
+        {
+            AlunosView.MoveCurrentToFirst();
+            
+        }
+
+        public void goNext()
+        {
+            AlunosView.MoveCurrentToNext();
+            
+        }
+
+        public void goPrevious()
+        {
+            AlunosView.MoveCurrentToPrevious();
+            
+        }
+
+        public void goLast()
+        {
+            AlunosView.MoveCurrentToLast();
+            
+        }
+
+
+
+
+
+
+
+
+        #endregion
+
+
+        #region CRUD
+        //Create Retrieve Update Delete
+
+        public void updateAluno(aluno a)
+        {
+            int aqui = 0;
+            using ( progIInoitesegEntities bd = new progIInoitesegEntities())
+            {
+                
+                var este = bd.alunos.Where(x => x.num == a.num).First();
+                if (este !=null)
+                {
+                    aqui = este.num;
+                    este.nome = a.nome;
+                    este.curso = a.curso;
+                    este.fotopath = a.fotopath;
+                    bd.SaveChanges();
+                }
+
+                reset();
+                var novo = ListaAlunos.Where(x => x.num == aqui).First();
+                AlunosView.MoveCurrentTo(novo);
+                System.Windows.MessageBox.Show("Registo gravado.");
+
+            }
+
+        }
+
+
+        #endregion
 
     } // fim classe ViewModel
 } //fim do namespace

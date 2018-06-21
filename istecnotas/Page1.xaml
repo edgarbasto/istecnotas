@@ -7,9 +7,57 @@
       mc:Ignorable="d" Background="Orange"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Page1">
-
+    <Page.Resources>
+        <local:convertecaminhotoimage x:Key="conversor"></local:convertecaminhotoimage>
+        
+    </Page.Resources>
     <Grid>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="79,74,0,0" TextWrapping="Wrap" Text="{Binding AlunoCorrente.nome}" VerticalAlignment="Top" Width="120"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="79*"/>
+            <RowDefinition Height="136*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Aluno Corrente" Grid.Row="0" Grid.ColumnSpan="3" Background="LightGray" TextAlignment="Center" FontSize="23"></TextBlock>
+        <Image x:Name="img" Grid.Row="1" Grid.RowSpan="3" Grid.Column="0" Source="{Binding AlunoCorrente.fotopath, Converter={StaticResource conversor}}" ></Image>
+        <Label Content="Num:" Grid.Row="1" Grid.Column="1"></Label>
+        <Label Content="Nome:" Grid.Row="2" Grid.Column="1"></Label>
+        <Label Content="Curso:" Grid.Row="3" Grid.Column="1"></Label>
+        <Label Content="Data Nasc:" Grid.Row="4" Grid.Column="1"></Label>
+        <TextBox Text="{Binding AlunoCorrente.num}" Grid.Row="1" Grid.Column="2" Margin="5"></TextBox>
+        <TextBox Text="{Binding AlunoCorrente.nome}" Grid.Row="2" Grid.Column="2" Margin="5"></TextBox>
+        <TextBox Text="{Binding AlunoCorrente.curso}" Grid.Row="3" Grid.Column="2" Margin="5"></TextBox>
+        <TextBox Text="{Binding AlunoCorrente.datanasc}" Grid.Row="4" Grid.Column="2" Margin="5"></TextBox>
+
+        <Button Content="Load Image" Margin="5" Height="33" Grid.Column="0" Grid.Row="4"></Button>
+
+        <DockPanel LastChildFill="False" Background="LightGray" Grid.Row="5" Grid.ColumnSpan="3">
+            <Button Content="First" Margin="5" Height="33" Command="local:Comandos.vaiPrimeiro"></Button>
+            <Button Content="Next" Margin="5" Height="33" Command="local:Comandos.vaiProximo"></Button>
+            <Button Content="Previous" Margin="5" Height="33" Command="local:Comandos.vaiAnterior"></Button>
+            <Button Content="Last" Margin="5" Height="33" Command="local:Comandos.vaiUltimo"></Button>
+            <Button Content="Save" Margin="5" Height="33" Command="local:Comandos.atualizaAluno"></Button>
+            <Button Content="Delete" Margin="5" Height="33"></Button>
+            <Button Content="Insert" Margin="5" Height="33"></Button>
+            
+            
+        </DockPanel>
+
+
+
+
+
+
+        <!--<TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="79,74,0,0" TextWrapping="Wrap" Text="{Binding AlunoCorrente.nome}" VerticalAlignment="Top" Width="120"/>-->
 
     </Grid>
 </Page>
